@@ -4,7 +4,7 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Header from './components/Header';
 import Footer from './components/Footer';
-
+import Profile from './pages/Profile'; // Import halaman profil
 
 const isAuthenticated = () => !!localStorage.getItem("authToken");
 
@@ -24,6 +24,10 @@ function App() {
           <Route
             path="/cart"
             element={isAuthenticated() ? <Cart /> : <Navigate to="/login" />}
+          />
+          <Route
+            path="/profile"
+            element={isAuthenticated() ? <Profile /> : <Navigate to="/login" />}
           />
         </Routes>
       </div>

@@ -3,6 +3,7 @@ import Button from "../atoms/Button";
 import InputNumber from "../atoms/InputNumber";
 import useCart from "../hooks/useCart";
 import Popup from "../atoms/Popup";
+import PopupLogin from "../atoms/PopupLogin";
 
 type ProductActionsProps = {
   id: number;
@@ -15,11 +16,18 @@ type ProductActionsProps = {
 const ProductActions: React.FC<ProductActionsProps> = ({ id, title, price, stock, image }) => {
   const [quantity, setQuantity] = useState<number>(1);
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [showPopupLogin, setShowPopupLogin] = useState<boolean>(false);
   const { addToCart, updateQuantity } = useCart();
 
   const handleAddToCart = () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setShowPopupLogin(true); // Tampilkan popup login jika token tidak ada
+      return;
+    }
+
     if (quantity > stock) {
-      setShowPopup(true);
+      setShowPopup(true); // Tampilkan popup stok jika kuantitas melebihi stok
     } else {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]");
       const existingItem = cart.find((item: { id: number }) => item.id === id);
@@ -35,8 +43,13 @@ const ProductActions: React.FC<ProductActionsProps> = ({ id, title, price, stock
   };
 
   const handleBuyNow = () => {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setShowPopupLogin(true); // Tampilkan popup login jika token tidak ada
+      return;
+    }
     if (quantity > stock) {
-      setShowPopup(true);
+      setShowPopup(true); // Tampilkan popup stok jika kuantitas melebihi stok
     } else {
       alert(`You are buying ${quantity} of ${title} at $${price} each!`);
     }
@@ -46,6 +59,10 @@ const ProductActions: React.FC<ProductActionsProps> = ({ id, title, price, stock
     setShowPopup(false);
   };
 
+  const closePopupLogin = () => {
+    setShowPopupLogin(false);
+  };
+
   return (
     <div className="mt-6 space-y-4">
       <div className="flex items-center space-x-2">
@@ -53,7 +70,6 @@ const ProductActions: React.FC<ProductActionsProps> = ({ id, title, price, stock
           Quantity:
         </label>
         <InputNumber value={quantity} onChange={setQuantity} />
-
         <p>Stock : {stock}</p>
       </div>
 
@@ -70,6 +86,13 @@ const ProductActions: React.FC<ProductActionsProps> = ({ id, title, price, stock
         <Popup
           message={`You cannot add more than ${stock} items of ${title} to your cart.`}
           onClose={closePopup}
+        />
+      )}
+
+      {showPopupLogin && (
+        <PopupLogin
+          message="You need to login to perform this action."
+          onClose={closePopupLogin}
         />
       )}
     </div>

@@ -20,6 +20,9 @@ const Header: React.FC = () => {
         </Link>
         {isLoggedIn ? (
           <>
+            <Link to="/profile" className="text-gray-800 hover:text-gray-900 hover:underline">
+              Profile
+            </Link>
             <Link to="/cart" className="text-gray-800 hover:text-gray-900 hover:underline">
               Cart
             </Link>
@@ -31,7 +34,7 @@ const Header: React.FC = () => {
             </button>
           </>
         ) : (
-          <Link to="/login" className=" hover:underline">
+          <Link to="/login" className="hover:underline">
             Login
           </Link>
         )}
